@@ -327,9 +327,6 @@ export function initializeHQDatabase(hqPath: string, options: InitOptions): void
   fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
 }
 
-/** @deprecated Use initializeHQDatabase instead */
-export const initializeWorkspaceDatabase = initializeHQDatabase;
-
 /**
  * Complete HQ initialization workflow
  */
