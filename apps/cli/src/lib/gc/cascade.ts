@@ -32,6 +32,7 @@ import {
   recycleAgentNames,
 } from './index.js'
 import { removeContainer } from '../execution/container-cleanup.js'
+import { parseSessionName } from '../execution/session-utils.js'
 import type { GCConfig } from './config.js'
 import { GC_DEFAULTS } from './config.js'
 
@@ -348,13 +349,11 @@ export function detectStaleTmuxSessions(
     for (const sessionName of output.split('\n')) {
       if (!sessionName) continue
       // Match prlt session patterns (e.g., TKT-123-implement-agent-name)
-      if (!isPrltSessionName(sessionName)) continue
+      const parsed = parseSessionName(sessionName)
+      if (!parsed) continue
       if (activeSessionIds.has(sessionName)) continue
 
-      const agentName = extractAgentNameFromSession(sessionName)
-      if (agentName) {
-        stale.push({ sessionName, agentName })
-      }
+      stale.push({ sessionName, agentName: parsed.agentName })
     }
   } catch {
     // tmux not available
@@ -485,19 +484,3 @@ function parseWorktreeList(output: string): WorktreeEntry[] {
   return entries
 }
 
-/**
- * Check if a tmux session name looks like a prlt-managed session.
- */
-function isPrltSessionName(name: string): boolean {
-  // Match patterns like: TKT-123-implement-agent-name, PRLT-456-review-bold-turing
-  return /^(?:TKT-\d+|[A-Z]+-\d+)-\w+-.+$/.test(name)
-}
-
-/**
- * Extract agent name from a prlt session name.
- * Session format: {ticketId}-{action}-{agentName}
- */
-function extractAgentNameFromSession(sessionName: string): string | null {
-  const match = sessionName.match(/^(?:TKT-\d+|[A-Z]+-\d+)-\w+-(.+)$/)
-  return match ? match[1] : null
-}
