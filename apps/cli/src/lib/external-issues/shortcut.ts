@@ -40,15 +40,6 @@ interface ShortcutSearchResponse {
   total?: number
 }
 
-interface ShortcutMember {
-  id?: string
-  profile?: {
-    name?: string
-    email_address?: string
-    mention_name?: string
-  }
-}
-
 interface ShortcutWorkflowState {
   id?: number
   name?: string

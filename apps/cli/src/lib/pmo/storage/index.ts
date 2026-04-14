@@ -26,7 +26,6 @@ import {
   CreateTicketInput,
   Epic,
   EpicFilter,
-  PMOStorage,
   Project,
   ProjectFilter,
   Spec,
@@ -46,7 +45,7 @@ import {
   TicketTemplate,
   TicketTemplateFilter,
 } from '../types.js'
-import { PMO_TABLES, PMO_SCHEMA_SQL } from '../schema.js'
+import { PMO_SCHEMA_SQL } from '../schema.js'
 import { StorageContext } from './types.js'
 import {
   runMigrations,

@@ -202,7 +202,6 @@ export async function getAsanaTaskByGid(
   const optFields = 'gid,name,completed,notes,assignee.gid,assignee.name,tags.gid,tags.name,memberships.project.gid,memberships.project.name,memberships.section.gid,memberships.section.name,due_on,permalink_url'
   const url = `https://app.asana.com/api/1.0/tasks/${encodeURIComponent(taskGid)}?opt_fields=${encodeURIComponent(optFields)}`
 
-  // eslint-disable-next-line n/no-unsupported-features/node-builtins -- fetch is available in supported Node runtimes for this CLI
   const response = await fetchImpl(url, {
     method: 'GET',
     headers: {
@@ -266,7 +265,6 @@ export async function listAsanaTasks(
   const optFields = 'gid,name,completed,notes,assignee.gid,assignee.name,tags.gid,tags.name,memberships.project.gid,memberships.project.name,memberships.section.gid,memberships.section.name,due_on,permalink_url'
   const url = `https://app.asana.com/api/1.0/projects/${encodeURIComponent(config.projectGid)}/tasks?opt_fields=${encodeURIComponent(optFields)}&limit=${limit}&completed_since=now`
 
-  // eslint-disable-next-line n/no-unsupported-features/node-builtins -- fetch is available in supported Node runtimes for this CLI
   const response = await fetchImpl(url, {
     method: 'GET',
     headers: {

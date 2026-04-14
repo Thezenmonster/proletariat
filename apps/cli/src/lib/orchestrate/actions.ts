@@ -129,7 +129,6 @@ function resolveTargetFromWorkspace(target: string): string {
     if (!dbPath) return target
 
     // Dynamic import to avoid circular dependencies — better-sqlite3 is always available at runtime
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const Database = require('better-sqlite3')
     const db = new Database(dbPath, { readonly: true })
     try {
@@ -160,7 +159,7 @@ function findWorkspaceDb(): string | null {
 /**
  * Rebase conflicting PRs after a merge.
  */
-const rebaseConflictingPrs: ActionHandler = (ctx) => {
+const rebaseConflictingPrs: ActionHandler = (_ctx) => {
   const start = Date.now()
   try {
     execSync('prlt work rebase --all', { timeout: 300_000, stdio: 'pipe' })
@@ -244,7 +243,6 @@ const notify: ActionHandler = (ctx) => {
   // Try to dispatch through NotificationManager if available
   try {
     // Dynamic import to avoid circular deps at module load time
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { getNotificationManager } = require('../notifications/index.js')
     const manager = getNotificationManager()
     if (manager) {
@@ -257,7 +255,6 @@ const notify: ActionHandler = (ctx) => {
   }
 
   // Fallback: terminal notification
-  // eslint-disable-next-line no-console
   console.log(`[orchestrate:notify] ${parts.join(' ')}`)
   return { action: 'notify', success: true, durationMs: Date.now() - start }
 }
@@ -399,7 +396,7 @@ const resolveConflict: ActionHandler = (ctx, config) => {
  *
  * This is Tier 2 of the cleanup system — runs as a daemon action.
  */
-const gcSweep: ActionHandler = (ctx) => {
+const gcSweep: ActionHandler = (_ctx) => {
   const start = Date.now()
   try {
     const hqPath = findHqPath()
@@ -515,7 +512,6 @@ function getActiveAgentNames(): Set<string> {
     const dbPath = findWorkspaceDb()
     if (!dbPath) return names
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const Database = require('better-sqlite3')
     const db = new Database(dbPath, { readonly: true })
     try {
@@ -543,7 +539,6 @@ function getActiveSessionIds(): Set<string> {
     const dbPath = findWorkspaceDb()
     if (!dbPath) return ids
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const Database = require('better-sqlite3')
     const db = new Database(dbPath, { readonly: true })
     try {
