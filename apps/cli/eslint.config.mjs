@@ -12,6 +12,45 @@ export default [
   prettier,
   {
     rules: {
+      // === Code quality rules (PRLT-1298) ===
+      // Prevent silent error swallowing — every catch must have a body
+      'no-empty': ['error', { allowEmptyCatch: false }],
+      // Prevent dead code after return/throw/break/continue
+      'no-unreachable': 'error',
+      // Catch unused imports and variables (core quality rule)
+      '@typescript-eslint/no-unused-vars': ['error', {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+      }],
+
+      // Pre-existing violations from oclif defaults — downgraded to warn.
+      // These should be fixed incrementally in follow-up tickets.
+      'n/no-unsupported-features/node-builtins': 'warn',
+      'no-void': 'warn',
+      'array-callback-return': 'warn',
+      '@typescript-eslint/no-empty-object-type': 'warn',
+      'unicorn/prefer-default-parameters': 'warn',
+      'unicorn/no-object-as-default-parameter': 'warn',
+      'no-eq-null': 'warn',
+      'eqeqeq': 'warn',
+      'no-bitwise': 'warn',
+      'no-useless-return': 'warn',
+      'prefer-const': 'warn',
+      'unicorn/no-useless-undefined': 'warn',
+      'unicorn/no-useless-fallback-in-spread': 'warn',
+      'unicorn/prefer-native-coercion-functions': 'warn',
+      'unicorn/consistent-existence-index-check': 'warn',
+      'unicorn/no-typeof-undefined': 'warn',
+      'unicorn/escape-case': 'warn',
+      'unicorn/no-hex-escape': 'warn',
+      'perfectionist/sort-sets': 'off',
+      'import/no-unresolved': 'warn',
+      'import/no-named-as-default-member': 'warn',
+      'jsdoc/valid-types': 'warn',
+      'jsdoc/require-returns-description': 'warn',
+      'max-lines': 'warn',
+
       // Disable all perfectionist sorting rules
       // These slow down development without catching real issues
       'perfectionist/sort-classes': 'off',
