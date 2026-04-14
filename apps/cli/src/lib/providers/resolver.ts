@@ -6,7 +6,7 @@
  *
  * All resolved providers are wrapped with EventEmittingProvider, making
  * the adapter layer the central event hub. Every provider (PMO, Linear,
- * Jira, Shortcut, Asana, Notion) is an equal peer that emits events through
+ * Jira, Shortcut, Asana) is an equal peer that emits events through
  * the same mechanism.
  *
  * Two resolution modes:
@@ -27,7 +27,6 @@ import { isTrelloConfigured } from '../trello/config.js'
 import { TrelloMapper } from '../trello/mapper.js'
 import { isAsanaConfigured } from '../asana/config.js'
 import { AsanaMapper } from '../asana/mapper.js'
-import { isNotionConfigured } from '../notion/config.js'
 import type { StateCategory } from '../pmo/types.js'
 import type { TicketProvider, ProviderStorage } from './types.js'
 import { PMOTicketProvider } from './pmo-provider.js'
@@ -37,7 +36,6 @@ import { TrelloTicketProvider } from './trello-provider.js'
 import { GitHubIssuesTicketProvider } from './github-provider.js'
 import { JiraTicketProvider } from './jira-provider.js'
 import { AsanaTicketProvider } from './asana-provider.js'
-import { NotionTicketProvider } from './notion-provider.js'
 import { EventEmittingProvider, type StatusResolver } from './event-emitting-provider.js'
 
 /**
@@ -45,9 +43,7 @@ import { EventEmittingProvider, type StatusResolver } from './event-emitting-pro
  * Used by EventEmittingProvider to resolve status names/categories
  * for event emission.
  */
-function createDbStatusResolver(db: Database.Database, storage: ProviderStorage): StatusResolver {
-  // storage param kept for interface compatibility — resolver uses db directly
-  void storage
+function createDbStatusResolver(db: Database.Database, _storage: ProviderStorage): StatusResolver {
   return {
     resolveStatusByName(projectId: string, statusName: string) {
       try {
@@ -130,7 +126,6 @@ function wrapWithEventsNoResolver(
  *
  * Uses the ticket's metadata to determine the source of truth:
  * - external_source = 'linear' + configured → Linear
- * - external_source = 'notion' + configured → Notion
  * - Otherwise → PMO
  *
  * The resolved provider is wrapped with EventEmittingProvider so that
@@ -210,12 +205,6 @@ export function resolveTicketProvider(
     }
   }
 
-  // Check Notion
-  if (externalSource === 'notion' && isNotionConfigured(db)) {
-    const inner = new NotionTicketProvider(db, storage, projectId)
-    return wrapWithEvents(inner, db, storage, projectId)
-  }
-
   // Default: local PMO
   const inner = new PMOTicketProvider(storage, projectId)
   return wrapWithEvents(inner, db, storage, projectId)
@@ -233,7 +222,7 @@ export function resolveTicketProvider(
  * @param db - Database handle for config lookups
  * @param storage - Storage instance
  * @param projectId - The PMO project ID
- * @param source - Optional source hint ('pmo', 'linear', 'notion', or 'auto')
+ * @param source - Optional source hint ('pmo', 'linear', or 'auto')
  * @returns The appropriate TicketProvider
  */
 export function resolveProjectProvider(
@@ -274,11 +263,6 @@ export function resolveProjectProvider(
 
   if (source === 'asana') {
     const inner = new AsanaTicketProvider(db, storage, projectId)
-    return wrapWithEvents(inner, db, storage, projectId)
-  }
-
-  if (source === 'notion') {
-    const inner = new NotionTicketProvider(db, storage, projectId)
     return wrapWithEvents(inner, db, storage, projectId)
   }
 

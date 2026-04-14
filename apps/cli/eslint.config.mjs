@@ -160,4 +160,19 @@ export default [
       'no-undef': 'off',
     },
   },
+  // Relax strict rules for test files — pre-existing violations.
+  // Test code is less critical to lint-enforce than production code.
+  {
+    files: ['test/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'warn',
+      'no-empty': 'warn',
+      'no-sequences': 'warn',
+      'no-new': 'warn',
+      'prefer-arrow-callback': 'warn',
+      'unicorn/prefer-event-target': 'warn',
+      'mocha/handle-done-callback': 'warn',
+      'mocha/no-sibling-hooks': 'warn',
+    },
+  },
 ]
